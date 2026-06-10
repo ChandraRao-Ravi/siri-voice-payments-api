@@ -1,4 +1,4 @@
-import express, { ErrorRequestHandler } from "express";
+import express, { ErrorRequestHandler, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { json } from "body-parser";
 import { authRouter } from "./routes/authRoutes";
@@ -13,7 +13,7 @@ export function createApp() {
   app.use(cors());
   app.use(json());
 
-  app.get("/health", (_req, res) => {
+  app.get("/health", (_req: Request, res: Response) => {
     res.json({ status: "ok" });
   });
 
@@ -23,7 +23,12 @@ export function createApp() {
   app.use("/payments", paymentRouter);
   app.use("/app", appRouter);
 
-  const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+  const errorHandler: ErrorRequestHandler = (
+    err,
+    _req,
+    res,
+    _next
+  ) => {
     console.error(err);
     res.status((err as any).statusCode ?? 500).json({
       error: (err as any).message ?? "Internal server error",
