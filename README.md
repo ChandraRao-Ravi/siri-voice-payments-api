@@ -211,41 +211,6 @@ Used by the iOS app to conditionally enable voice payment behavior.
 
 ---
 
-## ☁️ Deployment on Render
-
-This project is set up to deploy easily on **Render**’s free tier. [web:358][web:292][web:362]
-
-1. Push this repo to GitHub (do **not** commit `node_modules`, `dist`, or `prisma/dev.db`).
-2. On [Render](https://render.com), click **New → Web Service**. [web:351][web:358]
-3. Connect your GitHub repo.
-4. Configure the service:
-   - **Environment**: Node
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npm start`
-   - **Instance type**: Free [web:292][web:371]
-
-5. Set environment variables in Render: [web:356]
-
-   - `NODE_ENV=production`
-   - `JWT_SECRET=<some-long-random-string>`
-   - `DATABASE_URL=file:./dev.db`  
-     (or a Postgres URL later)
-   - `PORT` – leave blank; Render supplies this and the app uses `process.env.PORT`.
-
-6. Deploy and wait for the build to finish. Your API will be available at:
-
-```text
-https://<your-service>.onrender.com
-```
-
-Confirm with:
-
-```bash
-GET https://<your-service>.onrender.com/health
-```
-
----
-
 ## 🧪 Local Test Flow
 
 1. Register and login to get `accessToken`.
