@@ -271,5 +271,5 @@ prisma/dev.db
 
 ## 📲 Related Repos
 
-- 📱 **iOS App (Siri Voice Payments)**: _add your app repo URL here_
+- 📱 **iOS App (Siri Voice Payments)**: https://github.com/ChandraRao-Ravi/siri-money-transfer-poc
 - 🛠️ **This API**: you are here 😄
