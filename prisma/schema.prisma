@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
+  passwordHash   String
+  createdAt      DateTime        @default(now())
+  account        Account?
+  payees         Payee[]
+  transactions   Transaction[]
+  paymentIntents PaymentIntent[]
+}
+
+model Account {
+  id             Int             @id @default(autoincrement())
+  user           User            @relation(fields: [userId], references: [id])
+  userId         Int             @unique
+  balance        Int             @default(100000) // store as paise (e.g. 100000 = ₹1000.00)
+  currency       String          @default("INR")
+  createdAt      DateTime        @default(now())
+  transactions   Transaction[] // ⬅️ inverse relation
+  paymentIntents PaymentIntent[] // ⬅️ inverse relation
+}
+
+model Payee {
+  id             Int             @id @default(autoincrement())
+  user           User            @relation(fields: [userId], references: [id])
+  userId         Int
+  alias          String
+  name           String
+  accountRef     String
+  createdAt      DateTime        @default(now())
+  transactions   Transaction[] // ⬅️ inverse relation
+  paymentIntents PaymentIntent[] // ⬅️ inverse relation
+
+  @@index([userId, alias])
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  account     Account  @relation(fields: [accountId], references: [id])
+  accountId   Int
+  payee       Payee    @relation(fields: [payeeId], references: [id])
+  payeeId     Int
+  amountPaise Int
+  direction   String
+  description String
+  status      String   @default("success")
+  createdAt   DateTime @default(now())
+}
+
+model PaymentIntent {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  account     Account   @relation(fields: [accountId], references: [id])
+  accountId   Int
+  payee       Payee     @relation(fields: [payeeId], references: [id])
+  payeeId     Int
+  amountPaise Int
+  status      String    @default("created") // created, confirmed, cancelled
+  clientRef   String? // optional client reference
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime?
+}
